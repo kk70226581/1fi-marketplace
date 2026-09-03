@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch index.js",
+    "dev": "node --watch --watch-path=index.js --watch-path=app.js --watch-path=db index.js",
     "start": "node index.js",
     "seed": "node db/seed.js",
     "test": "node --test"

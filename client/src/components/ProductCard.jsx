@@ -17,8 +17,8 @@ export default function ProductCard({ product }) {
       <div className="card-meta"><p className="eyebrow">{product.brand}</p><span><Star size={11} fill="currentColor"/> {product.rating}</span></div>
       <h3>{product.name}</h3>
       <p className="tagline">{product.tagline}</p>
-      <div className="price-row"><strong>{money(product.startingPrice)}</strong><s>{money(product.mrp)}</s><b>{discount}% off</b></div>
-      <div className="emi-row"><span><small>EMI from</small><strong>{money(product.startingEmi)}<i>/month</i></strong><em>0% interest up to 24 months</em></span><span className="round-arrow">View <ArrowRight size={14}/></span></div>
+      <div className="price-row"><strong>{money(product.startingPrice)}</strong><s>{money(product.mrp)}</s><b>Save {discount}%</b></div>
+      <div className="emi-row"><span><small>EMI from</small><strong>{money(product.startingEmi)}<i>/month</i></strong><em>0% interest up to 24 months</em></span><span className="round-arrow">Explore <ArrowRight size={15}/></span></div>
     </div>
   </Link>;
 }
