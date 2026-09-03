@@ -9,6 +9,16 @@ fs.mkdirSync(dataDir, { recursive: true });
 const dbPath = process.env.DB_PATH || path.join(dataDir, 'marketplace.db');
 const db = new Database(dbPath);
 
+const media = {
+  iphoneCard: 'https://www.apple.com/v/iphone-17-pro/g/images/overview/contrast/iphone_17_pro__c4qscr35qsq6_large.jpg',
+  iphoneOrange: 'https://www.apple.com/v/iphone-17-pro/g/images/overview/product-viewer/colors_orange__cr2oq3n1dwk2_large.jpg',
+  iphoneSilver: 'https://www.apple.com/v/iphone-17-pro/g/images/overview/product-viewer/colors_silver__eb8fu7zfvwmu_large.jpg',
+  iphoneBlue: 'https://www.apple.com/v/iphone-17-pro/g/images/overview/product-viewer/colors_blue__li170wg4gkae_large.jpg',
+  galaxyGray: 'https://images.samsung.com/in/smartphones/galaxy-s25-ultra/images/galaxy-s25-ultra-features-colors-titanium-gray.jpg',
+  galaxyBlack: 'https://images.samsung.com/in/smartphones/galaxy-s25-ultra/images/galaxy-s25-ultra-features-colors-titanium-black.jpg',
+  pixel: 'https://lh3.googleusercontent.com/cUnl8qDLSpzTlH9_9fIEpNHq8EiVH-JwF-r0FPGha83zS26d0FO4LYUxYDU-k3CO6VDt9pyMOHWXiSvvFcenGccNM5B1L8TVO-2OtA=w1000-rj-sc0xffffffff'
+};
+
 db.pragma('foreign_keys = OFF');
 db.exec(`
   DROP TABLE IF EXISTS checkout_intents;
@@ -26,37 +36,37 @@ const products = [
     slug: 'iphone-17-pro', brand: 'Apple', name: 'iPhone 17 Pro',
     tagline: 'Pro power. Effortlessly yours.',
     description: 'A premium smartphone with a pro camera system, all-day battery and a brilliant edge-to-edge display.',
-    category: 'Smartphones', imageUrl: '/products/iphone-orange.svg', badge: 'NEW', rating: 4.8, soldCount: 120, seller: '1Fi Select', featured: 1,
-    images: ['/products/iphone-orange.svg', '/products/iphone-silver.svg', '/products/iphone-blue.svg'],
+    category: 'Smartphones', imageUrl: media.iphoneCard, badge: 'NEW', rating: 4.8, soldCount: 120, seller: '1Fi Select', featured: 1,
+    images: [media.iphoneOrange, media.iphoneSilver, media.iphoneBlue],
     specs: [['Display', '6.3-inch Super Retina XDR'], ['Processor', 'A19 Pro chip'], ['Rear camera', '48MP Pro camera system'], ['Front camera', '18MP Center Stage'], ['Battery', 'All-day battery life'], ['In the box', 'Handset, USB-C cable, documentation']],
     variants: [
-      ['256 GB · Cosmic Orange', '256 GB', 'Cosmic Orange', '#e46f34', '/products/iphone-orange.svg', 134900, 127400],
-      ['256 GB · Silver', '256 GB', 'Silver', '#deded9', '/products/iphone-silver.svg', 134900, 127400],
-      ['256 GB · Deep Blue', '256 GB', 'Deep Blue', '#354663', '/products/iphone-blue.svg', 134900, 127400]
+      ['256 GB · Cosmic Orange', '256 GB', 'Cosmic Orange', '#e46f34', media.iphoneOrange, 134900, 127400],
+      ['256 GB · Silver', '256 GB', 'Silver', '#deded9', media.iphoneSilver, 134900, 127400],
+      ['256 GB · Deep Blue', '256 GB', 'Deep Blue', '#354663', media.iphoneBlue, 134900, 127400]
     ]
   },
   {
     slug: 'samsung-galaxy-s25-ultra', brand: 'Samsung', name: 'Galaxy S25 Ultra',
     tagline: 'Galaxy AI meets Ultra.',
     description: 'An ultra-capable flagship with a precision stylus, intelligent camera tools and a vivid immersive display.',
-    category: 'Smartphones', imageUrl: '/products/galaxy-gray.svg', badge: 'BESTSELLER', rating: 4.7, soldCount: 94, seller: '1Fi Select', featured: 1,
-    images: ['/products/galaxy-gray.svg', '/products/galaxy-black.svg'],
+    category: 'Smartphones', imageUrl: media.galaxyGray, badge: 'BESTSELLER', rating: 4.7, soldCount: 94, seller: '1Fi Select', featured: 1,
+    images: [media.galaxyGray, media.galaxyBlack],
     specs: [['Display', '6.9-inch Dynamic AMOLED 2X'], ['Processor', 'Snapdragon 8 Elite'], ['Rear camera', '200MP quad camera'], ['Front camera', '12MP'], ['Battery', '5000 mAh'], ['In the box', 'Handset, S Pen, USB-C cable, documentation']],
     variants: [
-      ['256 GB · Titanium Gray', '256 GB', 'Titanium Gray', '#989792', '/products/galaxy-gray.svg', 129999, 119999],
-      ['512 GB · Titanium Black', '512 GB', 'Titanium Black', '#343434', '/products/galaxy-black.svg', 141999, 131999]
+      ['256 GB · Titanium Gray', '256 GB', 'Titanium Gray', '#989792', media.galaxyGray, 129999, 119999],
+      ['512 GB · Titanium Black', '512 GB', 'Titanium Black', '#343434', media.galaxyBlack, 141999, 131999]
     ]
   },
   {
     slug: 'google-pixel-10-pro', brand: 'Google', name: 'Pixel 10 Pro',
     tagline: 'Helpful by design.',
     description: 'A refined AI-first phone with intelligent photography, clean software and a polished all-day experience.',
-    category: 'Smartphones', imageUrl: '/products/pixel-porcelain.svg', badge: 'NEW LAUNCH', rating: 4.6, soldCount: 61, seller: '1Fi Select', featured: 0,
-    images: ['/products/pixel-porcelain.svg', '/products/pixel-obsidian.svg'],
+    category: 'Smartphones', imageUrl: media.pixel, badge: 'NEW LAUNCH', rating: 4.6, soldCount: 61, seller: '1Fi Select', featured: 0,
+    images: [media.pixel],
     specs: [['Display', '6.3-inch Super Actua display'], ['Processor', 'Google Tensor G5'], ['Rear camera', 'Pro triple camera system'], ['Front camera', '42MP'], ['Battery', '24+ hour battery'], ['In the box', 'Handset, USB-C cable, documentation']],
     variants: [
-      ['256 GB · Porcelain', '256 GB', 'Porcelain', '#eee9df', '/products/pixel-porcelain.svg', 109999, 99999],
-      ['256 GB · Obsidian', '256 GB', 'Obsidian', '#292929', '/products/pixel-obsidian.svg', 109999, 99999]
+      ['256 GB · Porcelain', '256 GB', 'Porcelain', '#eee9df', media.pixel, 109999, 99999],
+      ['256 GB · Obsidian', '256 GB', 'Obsidian', '#292929', media.pixel, 109999, 99999]
     ]
   }
 ];
