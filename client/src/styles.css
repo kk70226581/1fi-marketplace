@@ -456,6 +456,9 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 .product-image-wrap img,.product-card[data-brand="samsung"] .product-image-wrap img,.product-card[data-brand="google"] .product-image-wrap img { width:100%; height:100%; padding:18px 22px; object-fit:contain; }
 .product-card[data-brand="samsung"] .product-image-wrap { background:linear-gradient(145deg,#13151d,#030407); }
 .product-card[data-brand="apple"] .product-image-wrap { background:linear-gradient(145deg,#fff 0%,#f2f0f3 100%); }
+.product-card[data-product="iphone-17-pro"] .product-image-wrap { background:radial-gradient(circle at 50% 28%,#fff 0%,#f4f1f6 62%,#ebe6ef 100%); }
+.product-card[data-product="iphone-17-pro"] .product-image-wrap img { padding:10px 22px; transform:scale(1.32); }
+.product-card[data-product="iphone-17-pro"]:hover .product-image-wrap img { transform:scale(1.36); }
 .product-card-body { padding:17px 18px 18px; }
 .card-meta { margin-bottom:7px; }
 .eyebrow { font-size:9px; letter-spacing:.14em; }

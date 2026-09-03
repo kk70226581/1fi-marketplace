@@ -7,7 +7,7 @@ export default function ProductCard({ product }) {
   const saving = product.mrp - product.startingPrice;
   const discount = Math.round((saving / product.mrp) * 100);
 
-  return <Link className="product-card" data-brand={product.brand.toLowerCase()} to={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
+  return <Link className="product-card" data-brand={product.brand.toLowerCase()} data-product={product.slug} to={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
     <div className="product-image-wrap">
       <img src={product.imageUrl} alt={product.name} loading="lazy" decoding="async"/>
       <span className="product-badge"><BadgeCheck size={12}/>{product.badge}</span>
