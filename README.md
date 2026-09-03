@@ -67,8 +67,8 @@ Returns marketplace cards with each product's starting price and EMI. Optional s
       "brand": "Apple",
       "name": "iPhone 17 Pro",
       "imageUrl": "/products/iphone.svg",
-      "startingPrice": 129900,
-      "startingEmi": 10609
+      "startingPrice": 127400,
+      "startingEmi": 2842
     }
   ]
 }
@@ -76,7 +76,7 @@ Returns marketplace cards with each product's starting price and EMI. Optional s
 
 ### `GET /api/products/:slug`
 
-Returns one product with all variants and nested EMI plans. Each plan includes tenure, monthly payment, interest rate, cashback, and recommendation status.
+Returns one product with its image gallery, specifications, all variants, and seven nested EMI plans per variant. Each plan includes tenure, monthly payment, interest rate, cashback, and recommendation status.
 
 ### `POST /api/checkout`
 
@@ -94,11 +94,16 @@ Validates that the selected product, variant, and plan belong together and creat
 
 ```text
 products 1 ─── * variants 1 ─── * emi_plans
+    │                │               │
+    ├── * product_images             └── * checkout_intents
+    └── * product_specifications
 ```
 
-- `products`: slug, brand, product copy, category, image URL, badge, featured status
-- `variants`: product reference, storage, color, color token, MRP, selling price, default status
+- `products`: slug, brand, product copy, category, image URL, seller, rating, badge, featured status
+- `product_images` and `product_specifications`: ordered gallery and technical product details
+- `variants`: product reference, storage, color, variant image, MRP, selling price, default status
 - `emi_plans`: variant reference, tenure, monthly payment, interest rate, cashback, recommendation status
+- `checkout_intents`: persisted validated plan selections with a unique reference
 
 The complete schema is in `server/db/schema.sql`; repeatable seed data is in `server/db/seed.js`. The database file is generated at `server/data/marketplace.db` and intentionally excluded from Git.
 

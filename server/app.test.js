@@ -12,7 +12,8 @@ test('lists seeded products from SQLite', async () => {
 test('returns variants and plans at a unique product URL', async () => {
   const response = await request(app).get('/api/products/iphone-17-pro').expect(200);
   assert.equal(response.body.product.variants.length, 3);
-  assert.ok(response.body.product.variants.every((variant) => variant.emiPlans.length >= 3));
+  assert.ok(response.body.product.variants.every((variant) => variant.emiPlans.length === 7));
+  assert.ok(response.body.product.variants[0].emiPlans.some((plan) => plan.interestRate === 10.5));
 });
 
 test('validates checkout selections', async () => {

@@ -25,6 +25,9 @@ const mapProduct = (row) => ({
   category: row.category,
   imageUrl: row.image_url,
   badge: row.badge,
+  rating: row.rating,
+  soldCount: row.sold_count,
+  seller: row.seller,
   featured: Boolean(row.featured)
 });
 
@@ -47,14 +50,19 @@ export function getProduct(slug) {
   if (!row) return null;
   const variants = db.prepare('SELECT * FROM variants WHERE product_id = ? ORDER BY is_default DESC, id').all(row.id);
   const planQuery = db.prepare('SELECT * FROM emi_plans WHERE variant_id = ? ORDER BY tenure_months');
+  const images = db.prepare('SELECT image_url, alt_text FROM product_images WHERE product_id = ? ORDER BY sort_order, id').all(row.id);
+  const specifications = db.prepare('SELECT label, value FROM product_specifications WHERE product_id = ? ORDER BY sort_order, id').all(row.id);
   return {
     ...mapProduct(row),
+    images: images.map((image) => ({ imageUrl: image.image_url, alt: image.alt_text })),
+    specifications,
     variants: variants.map((variant) => ({
       id: variant.id,
       label: variant.label,
       storage: variant.storage,
       color: variant.color,
       colorHex: variant.color_hex,
+      imageUrl: variant.image_url,
       mrp: variant.mrp,
       price: variant.price,
       isDefault: Boolean(variant.is_default),
@@ -68,4 +76,11 @@ export function getProduct(slug) {
       }))
     }))
   };
+}
+
+export function createCheckout(productId, variantId, planId) {
+  const reference = `1FI-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
+  db.prepare(`INSERT INTO checkout_intents (reference, product_id, variant_id, emi_plan_id)
+    VALUES (?, ?, ?, ?)`).run(reference, productId, variantId, planId);
+  return reference;
 }

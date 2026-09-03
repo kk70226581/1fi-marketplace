@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getProduct, listProducts } from './db/database.js';
+import { createCheckout, getProduct, listProducts } from './db/database.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const app = express();
@@ -25,9 +25,10 @@ app.post('/api/checkout', (req, res) => {
   const variant = product?.variants.find((item) => item.id === variantId);
   const plan = variant?.emiPlans.find((item) => item.id === planId);
   if (!product || !variant || !plan) return res.status(400).json({ error: 'Invalid product selection' });
+  const reference = createCheckout(product.id, variant.id, plan.id);
   return res.status(201).json({
     checkout: {
-      id: `1FI-${Date.now().toString(36).toUpperCase()}`,
+      id: reference,
       product: product.name,
       variant: variant.label,
       monthlyPayment: plan.monthlyPayment,
