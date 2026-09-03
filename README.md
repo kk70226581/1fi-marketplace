@@ -1,26 +1,38 @@
 # 1Fi Marketplace
 
-A mobile-first full-stack marketplace concept for the 1Fi Shop experience. It adds a third **1Fi Marketplace** entry alongside **Top Brands** and **Nearby Stores**, then lets customers browse products, select a variant, compare mutual-fund-backed EMI plans, and proceed with a selected plan.
+A mobile-first marketplace concept for the 1Fi Shop experience. It adds a third **1Fi Marketplace** entry alongside **Top Brands** and **Nearby Stores**, then lets customers browse products, select a variant, compare mutual-fund-backed EMI plans, and proceed with a selected plan.
 
-The interface follows the current 1Fi app language: a compact 500px mobile canvas, `#712CDC` purple, lavender surfaces, large rounded cards, pill controls, and a floating five-item navigation bar.
+The marketplace includes a five-slide campaign carousel, ten catalogue products, category and search controls, full product pages, and responsive layouts for mobile and desktop.
 
 ## Tech stack
 
 - Frontend: React 19, React Router, Vite, CSS
 - Backend: Node.js, Express 5
-- Database: SQLite via `better-sqlite3`
-- Tests: Node test runner, Supertest
+- Database: MongoDB with Mongoose
+- Tests: Node test runner and Supertest
 
 ## Setup and run
 
-Requirements: Node.js 20+ and npm.
+Requirements: Node.js 20+, npm, and a running MongoDB server.
 
-```bash
-npm install
-npm run setup
-npm run seed
-npm run dev
-```
+1. Install dependencies:
+
+   ```bash
+   npm run setup
+   ```
+
+2. Copy `server/.env.example` to `server/.env` if a different MongoDB connection string or port is required. By default, the app uses:
+
+   ```text
+   mongodb://127.0.0.1:27017/onefi_marketplace
+   ```
+
+3. Seed the catalogue and start the app:
+
+   ```bash
+   npm run seed
+   npm run dev
+   ```
 
 Open `http://localhost:5173`. The frontend development server proxies `/api` requests to the API at `http://localhost:4000`.
 
@@ -31,7 +43,7 @@ npm run build
 npm start
 ```
 
-Then open `http://localhost:4000`. Express serves both the API and the built React app.
+Then open `http://localhost:4000`.
 
 Run verification with:
 
@@ -51,72 +63,47 @@ npm test
 ### `GET /api/health`
 
 ```json
-{ "status": "ok" }
+{ "status": "ok", "database": "mongodb" }
 ```
 
 ### `GET /api/products`
 
-Returns marketplace cards with each product's starting price and EMI. Optional search: `/api/products?search=apple`.
-
-```json
-{
-  "products": [
-    {
-      "id": 1,
-      "slug": "iphone-17-pro",
-      "brand": "Apple",
-      "name": "iPhone 17 Pro",
-      "imageUrl": "/products/iphone.svg",
-      "startingPrice": 127400,
-      "startingEmi": 2842
-    }
-  ]
-}
-```
+Returns ten marketplace cards with each product's starting price and EMI. Optional search: `/api/products?search=apple`.
 
 ### `GET /api/products/:slug`
 
-Returns one product with its image gallery, specifications, all variants, and seven nested EMI plans per variant. Each plan includes tenure, monthly payment, interest rate, cashback, and recommendation status.
+Returns one product with its image gallery, specifications, variants, and embedded EMI plans. Each plan includes tenure, monthly payment, interest rate, cashback, and recommendation status.
 
 ### `POST /api/checkout`
 
-Validates that the selected product, variant, and plan belong together and creates a demo checkout handoff.
+Validates that the selected product, variant, and plan belong together, then persists a demo checkout intent in MongoDB.
 
 ```json
 {
   "productSlug": "iphone-17-pro",
-  "variantId": 1,
-  "planId": 3
+  "variantId": "<MongoDB ObjectId>",
+  "planId": "<MongoDB ObjectId>"
 }
 ```
 
-## Database schema
+## MongoDB data model
 
 ```text
-products 1 ─── * variants 1 ─── * emi_plans
-    │                │               │
-    ├── * product_images             └── * checkout_intents
-    └── * product_specifications
+products
+  ├── images[]
+  ├── specifications[]
+  └── variants[]
+       └── plans[]
+
+checkout_intents → selected product, variant, and plan ObjectIds
 ```
 
-- `products`: slug, brand, product copy, category, image URL, seller, rating, badge, featured status
-- `product_images` and `product_specifications`: ordered gallery and technical product details
-- `variants`: product reference, storage, color, variant image, MRP, selling price, default status
-- `emi_plans`: variant reference, tenure, monthly payment, interest rate, cashback, recommendation status
-- `checkout_intents`: persisted validated plan selections with a unique reference
-
-The complete schema is in `server/db/schema.sql`; repeatable seed data is in `server/db/seed.js`. The database file is generated at `server/data/marketplace.db` and intentionally excluded from Git.
-
-## Deployment
-
-`render.yaml` contains a Render web-service configuration. Connect the repository in Render, use the Blueprint, and the service will build the client and serve it from Express. Seed data is generated automatically on the first start if the SQLite file does not exist.
+`products` contains product copy, category, media, availability, specifications, and nested variant/EMI-plan data. `checkout_intents` stores validated selections and a unique demo reference. The repeatable catalogue seed is in `server/db/seed.js`.
 
 ## Demo checklist
 
-For the requested 2–5 minute walkthrough, show:
-
-1. The three Shop options and blank states for Top Brands/Nearby Stores.
-2. Marketplace search and API-loaded product cards.
-3. A product URL, variant changes, EMI selection, cashback and 0% interest.
-4. The successful Proceed flow.
-5. The SQLite schema/seed and both API responses.
+1. Show the three Shop options and the blank Top Brands/Nearby Stores states.
+2. Open **1Fi Marketplace**, browse the campaign carousel, filter categories, and search products.
+3. Open a product, switch its variant, and choose an EMI plan.
+4. Complete the demo Proceed flow.
+5. Show the MongoDB `onefi_marketplace` database and API responses.

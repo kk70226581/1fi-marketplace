@@ -9,33 +9,48 @@ export const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
-app.get('/api/products', (req, res) => res.json({ products: listProducts(String(req.query.search || '')) }));
-app.get('/api/products/:slug', (req, res) => {
-  const product = getProduct(req.params.slug);
-  if (!product) return res.status(404).json({ error: 'Product not found' });
-  return res.json({ product });
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', database: 'mongodb' }));
+app.get('/api/products', async (req, res, next) => {
+  try {
+    const products = await listProducts(String(req.query.search || ''));
+    return res.json({ products });
+  } catch (error) {
+    return next(error);
+  }
 });
-app.post('/api/checkout', (req, res) => {
+app.get('/api/products/:slug', async (req, res, next) => {
+  try {
+    const product = await getProduct(req.params.slug);
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+    return res.json({ product });
+  } catch (error) {
+    return next(error);
+  }
+});
+app.post('/api/checkout', async (req, res, next) => {
   const { productSlug, variantId, planId } = req.body || {};
-  if (!productSlug || !Number.isInteger(variantId) || !Number.isInteger(planId)) {
+  if (!productSlug || typeof variantId !== 'string' || typeof planId !== 'string') {
     return res.status(400).json({ error: 'productSlug, variantId and planId are required' });
   }
-  const product = getProduct(productSlug);
-  const variant = product?.variants.find((item) => item.id === variantId);
-  const plan = variant?.emiPlans.find((item) => item.id === planId);
-  if (!product || !variant || !plan) return res.status(400).json({ error: 'Invalid product selection' });
-  const reference = createCheckout(product.id, variant.id, plan.id);
-  return res.status(201).json({
-    checkout: {
-      id: reference,
-      product: product.name,
-      variant: variant.label,
-      monthlyPayment: plan.monthlyPayment,
-      tenureMonths: plan.tenureMonths,
-      status: 'ready'
-    }
-  });
+  try {
+    const product = await getProduct(productSlug);
+    const variant = product?.variants.find((item) => item.id === variantId);
+    const plan = variant?.emiPlans.find((item) => item.id === planId);
+    if (!product || !variant || !plan) return res.status(400).json({ error: 'Invalid product selection' });
+    const reference = await createCheckout(product.id, variant.id, plan.id);
+    return res.status(201).json({
+      checkout: {
+        id: reference,
+        product: product.name,
+        variant: variant.label,
+        monthlyPayment: plan.monthlyPayment,
+        tenureMonths: plan.tenureMonths,
+        status: 'ready'
+      }
+    });
+  } catch (error) {
+    return next(error);
+  }
 });
 
 const clientDist = path.resolve(here, '../client/dist');

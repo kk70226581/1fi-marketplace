@@ -1,13 +1,4 @@
-import Database from 'better-sqlite3';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const dataDir = path.resolve(here, '../data');
-fs.mkdirSync(dataDir, { recursive: true });
-const dbPath = process.env.DB_PATH || path.join(dataDir, 'marketplace.db');
-const db = new Database(dbPath);
+import { CheckoutIntent, Product, connectDatabase, disconnectDatabase } from './database.js';
 
 const media = {
   iphoneCard: 'https://www.apple.com/v/iphone-17-pro/g/images/overview/contrast/iphone_17_pro__c4qscr35qsq6_large.jpg',
@@ -26,19 +17,7 @@ const media = {
   homepod: 'https://www.apple.com/v/homepod-mini/j/images/meta/homepod-mini__bnxwvz5xrtpy_og.png?202604170053'
 };
 
-db.pragma('foreign_keys = OFF');
-db.exec(`
-  DROP TABLE IF EXISTS checkout_intents;
-  DROP TABLE IF EXISTS emi_plans;
-  DROP TABLE IF EXISTS variants;
-  DROP TABLE IF EXISTS product_images;
-  DROP TABLE IF EXISTS product_specifications;
-  DROP TABLE IF EXISTS products;
-`);
-db.pragma('foreign_keys = ON');
-db.exec(fs.readFileSync(path.join(here, 'schema.sql'), 'utf8'));
-
-const products = [
+export const products = [
   {
     slug: 'iphone-17-pro', brand: 'Apple', name: 'iPhone 17 Pro',
     tagline: 'Pro power. Effortlessly yours.',
@@ -47,9 +26,9 @@ const products = [
     images: [media.iphoneOrange, media.iphoneSilver, media.iphoneBlue],
     specs: [['Display', '6.3-inch Super Retina XDR'], ['Processor', 'A19 Pro chip'], ['Rear camera', '48MP Pro camera system'], ['Front camera', '18MP Center Stage'], ['Battery', 'All-day battery life'], ['In the box', 'Handset, USB-C cable, documentation']],
     variants: [
-      ['256 GB · Cosmic Orange', '256 GB', 'Cosmic Orange', '#e46f34', media.iphoneOrange, 134900, 127400],
-      ['256 GB · Silver', '256 GB', 'Silver', '#deded9', media.iphoneSilver, 134900, 127400],
-      ['256 GB · Deep Blue', '256 GB', 'Deep Blue', '#354663', media.iphoneBlue, 134900, 127400]
+      ['256 GB · Cosmic Orange', '256 GB', 'Cosmic Orange', '#e46f34', media.iphoneCard, 134900, 127400],
+      ['256 GB · Silver', '256 GB', 'Silver', '#deded9', media.iphoneCard, 134900, 127400],
+      ['256 GB · Deep Blue', '256 GB', 'Deep Blue', '#354663', media.iphoneCard, 134900, 127400]
     ]
   },
   {
@@ -158,44 +137,60 @@ const products = [
   }
 ];
 
-const insertProduct = db.prepare(`INSERT INTO products
-  (slug, brand, name, tagline, description, category, image_url, badge, rating, sold_count, seller, featured)
-  VALUES (@slug, @brand, @name, @tagline, @description, @category, @imageUrl, @badge, @rating, @soldCount, @seller, @featured)`);
-const insertImage = db.prepare('INSERT INTO product_images (product_id, image_url, alt_text, sort_order) VALUES (?, ?, ?, ?)');
-const insertSpec = db.prepare('INSERT INTO product_specifications (product_id, label, value, sort_order) VALUES (?, ?, ?, ?)');
-const insertVariant = db.prepare(`INSERT INTO variants
-  (product_id, label, storage, color, color_hex, image_url, mrp, price, is_default)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-const insertPlan = db.prepare(`INSERT INTO emi_plans
-  (variant_id, tenure_months, monthly_payment, interest_rate, cashback, recommended)
-  VALUES (?, ?, ?, ?, ?, ?)`);
-
 function monthlyPayment(principal, months, annualRate) {
   if (annualRate === 0) return Math.ceil(principal / months);
   const rate = annualRate / 1200;
   return Math.ceil(principal * rate * ((1 + rate) ** months) / (((1 + rate) ** months) - 1));
 }
 
-const seed = db.transaction(() => {
-  for (const product of products) {
-    const { variants, images, specs, ...data } = product;
-    const productId = Number(insertProduct.run(data).lastInsertRowid);
-    images.forEach((imageUrl, index) => insertImage.run(productId, imageUrl, `${product.name} view ${index + 1}`, index));
-    specs.forEach(([label, value], index) => insertSpec.run(productId, label, value, index));
-    variants.forEach((variant, index) => {
-      const variantId = Number(insertVariant.run(productId, ...variant, index === 0 ? 1 : 0).lastInsertRowid);
-      const mrp = variant[5];
-      const cashback = mrp - variant[6];
-      const referencePayments = { 3: 44967, 6: 22483, 12: 11242, 24: 5621, 36: 4297, 48: 3385, 60: 2842 };
-      [3, 6, 12, 24, 36, 48, 60].forEach((months) => {
-        const rate = months <= 24 ? 0 : 10.5;
-        const payment = product.slug === 'iphone-17-pro' ? referencePayments[months] : monthlyPayment(mrp, months, rate);
-        insertPlan.run(variantId, months, payment, rate, cashback, months === 12 ? 1 : 0);
-      });
-    });
-  }
-});
+function makePlans(productSlug, mrp, price) {
+  const referencePayments = { 3: 44967, 6: 22483, 12: 11242, 24: 5621, 36: 4297, 48: 3385, 60: 2842 };
+  const cashback = mrp - price;
+  return [3, 6, 12, 24, 36, 48, 60].map((tenureMonths) => {
+    const interestRate = tenureMonths <= 24 ? 0 : 10.5;
+    return {
+      tenureMonths,
+      interestRate,
+      cashback,
+      monthlyPayment: productSlug === 'iphone-17-pro'
+        ? referencePayments[tenureMonths]
+        : monthlyPayment(mrp, tenureMonths, interestRate),
+      recommended: tenureMonths === 12
+    };
+  });
+}
 
-seed();
-console.log(`Seeded ${products.length} products into ${dbPath}`);
-db.close();
+function toMongoProduct(product) {
+  const { variants, images, specs, ...data } = product;
+  return {
+    ...data,
+    featured: Boolean(data.featured),
+    images: images.map((imageUrl, index) => ({ imageUrl, alt: `${product.name} view ${index + 1}` })),
+    specifications: specs.map(([label, value]) => ({ label, value })),
+    variants: variants.map(([label, storage, color, colorHex, imageUrl, mrp, price], index) => ({
+      label,
+      storage,
+      color,
+      colorHex,
+      imageUrl,
+      mrp,
+      price,
+      isDefault: index === 0,
+      emiPlans: makePlans(product.slug, mrp, price)
+    }))
+  };
+}
+
+export async function seedDatabase() {
+  await connectDatabase();
+  await CheckoutIntent.deleteMany({});
+  await Product.deleteMany({});
+  await Product.insertMany(products.map(toMongoProduct));
+  return products.length;
+}
+
+if (process.argv[1]?.endsWith('seed.js')) {
+  const count = await seedDatabase();
+  console.log(`Seeded ${count} products into MongoDB`);
+  await disconnectDatabase();
+}

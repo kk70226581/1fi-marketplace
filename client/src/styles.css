@@ -372,8 +372,8 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 
 .product-showcase[data-brand="apple"] { background:#f7f7f8; }
 .product-showcase[data-brand="apple"] img { width:92%; height:90%; object-fit:contain; object-position:center; }
-.product-showcase[data-product="iphone-17-pro"] { background:#000; }
-.product-showcase[data-product="iphone-17-pro"] img { width:100%; height:100%; object-fit:cover; object-position:72% center; }
+.product-showcase[data-product="iphone-17-pro"] { background:#f7f7f8; }
+.product-showcase[data-product="iphone-17-pro"] img { width:92%; height:90%; object-fit:contain; object-position:center; }
 
 @media (min-width:900px) {
   .carousel-hero { height:455px; }
@@ -401,7 +401,22 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 }
 
 @media (min-width:1200px) {
-  .product-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:15px; }
+  .product-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; }
+  .product-card { border-radius:16px; box-shadow:0 5px 17px rgba(28,18,40,.055); }
+  .product-image-wrap { height:158px; }
+  .product-image-wrap img { padding:10px 14px; }
+  .product-card-body { padding:12px 13px 13px; }
+  .product-card h3 { font-size:15px; }
+  .product-card .tagline { font-size:9px; margin:4px 0 8px; }
+  .product-card .price-row strong { font-size:15px; }
+  .product-card .emi-row { min-height:44px; margin-top:8px; padding-top:8px; }
+  .product-card .emi-row em { font-size:6.5px; }
+  .product-card .round-arrow { height:27px; padding:0 8px; }
+}
+
+@media (min-width:1600px) {
+  .product-grid { grid-template-columns:repeat(5,minmax(0,1fr)); gap:16px; }
+  .product-image-wrap { height:172px; }
 }
 
 @media (max-width:899px) {
