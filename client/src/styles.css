@@ -373,8 +373,8 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 
 .product-showcase[data-brand="apple"] { background:#f7f7f8; }
 .product-showcase[data-brand="apple"] img { width:92%; height:90%; object-fit:contain; object-position:center; }
-.product-showcase[data-product="iphone-17-pro"] { background:#f7f7f8; }
-.product-showcase[data-product="iphone-17-pro"] img { width:92%; height:90%; object-fit:contain; object-position:center; }
+.product-showcase[data-product="iphone-17-pro"] { background:#050505; }
+.product-showcase[data-product="iphone-17-pro"] img { width:100%; height:100%; object-fit:cover; object-position:76% center; }
 
 @media (min-width:900px) {
   .carousel-hero { height:455px; }
