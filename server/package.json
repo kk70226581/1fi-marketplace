@@ -1,0 +1,17 @@
+{
+  "name": "1fi-marketplace-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js",
+    "seed": "node db/seed.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "supertest": "^7.1.4"
+  }
+}

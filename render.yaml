@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: onefi-marketplace
+    runtime: node
+    buildCommand: npm install && npm run setup && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.2
