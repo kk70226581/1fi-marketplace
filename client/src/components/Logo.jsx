@@ -1,3 +1,3 @@
 export default function Logo({ compact = false }) {
-  return <div className={`logo ${compact ? 'compact' : ''}`} aria-label="1Fi"><span>1</span><span className="logo-mark">F</span><span>i</span></div>;
+  return <img className={`logo ${compact ? 'compact' : ''}`} src="/brand/1fi-mark.svg" alt="1Fi"/>;
 }

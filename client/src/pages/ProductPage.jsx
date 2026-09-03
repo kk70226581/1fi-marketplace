@@ -1,5 +1,5 @@
 import {
-  ChevronRight, CircleCheck, Heart, LockKeyhole, PackageCheck, RotateCcw,
+  ArrowLeft, ChevronRight, CircleCheck, Heart, LockKeyhole, PackageCheck, RotateCcw,
   ShieldCheck, Sparkles, Star, Truck, WalletCards, Check
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -57,6 +57,7 @@ export default function ProductPage() {
 
   return <div className="product-site">
     <header className="site-header"><div className="site-header-inner">
+      <Link className="mobile-detail-back" to="/shop" aria-label="Back to Shop"><ArrowLeft size={19}/></Link>
       <Link className="brand-link" to="/shop"><Logo/></Link>
       <nav><Link to="/shop">Marketplace</Link><a href="#how-it-works">How it works</a><a href="#details">Product details</a></nav>
       <span className="secure-pill"><LockKeyhole size={14}/> Secure checkout</span>
