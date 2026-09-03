@@ -1,5 +1,7 @@
+const apiBaseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 async function request(path, options) {
-  const response = await fetch(path, options);
+  const response = await fetch(`${apiBaseUrl}${path}`, options);
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || 'Unable to load data');
   return body;

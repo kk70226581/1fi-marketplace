@@ -1,10 +1,15 @@
 services:
   - type: web
-    name: onefi-marketplace
+    name: onefi-marketplace-api
     runtime: node
-    buildCommand: npm install && npm run setup && npm run build
-    startCommand: npm start
+    plan: free
+    buildCommand: npm --prefix server ci
+    startCommand: npm --prefix server start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: 20.12.2
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
