@@ -26,9 +26,9 @@ export const products = [
     images: [media.iphoneOrange, media.iphoneSilver, media.iphoneBlue],
     specs: [['Display', '6.3-inch Super Retina XDR'], ['Processor', 'A19 Pro chip'], ['Rear camera', '48MP Pro camera system'], ['Front camera', '18MP Center Stage'], ['Battery', 'All-day battery life'], ['In the box', 'Handset, USB-C cable, documentation']],
     variants: [
-      ['256 GB · Cosmic Orange', '256 GB', 'Cosmic Orange', '#e46f34', media.iphoneCard, 134900, 127400],
-      ['256 GB · Silver', '256 GB', 'Silver', '#deded9', media.iphoneCard, 134900, 127400],
-      ['256 GB · Deep Blue', '256 GB', 'Deep Blue', '#354663', media.iphoneCard, 134900, 127400]
+      ['256 GB · Cosmic Orange', '256 GB', 'Cosmic Orange', '#e46f34', media.iphoneOrange, 134900, 127400],
+      ['256 GB · Silver', '256 GB', 'Silver', '#deded9', media.iphoneSilver, 134900, 127400],
+      ['256 GB · Deep Blue', '256 GB', 'Deep Blue', '#354663', media.iphoneBlue, 134900, 127400]
     ]
   },
   {

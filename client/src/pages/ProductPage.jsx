@@ -73,7 +73,7 @@ export default function ProductPage() {
           </div>
           <div className="rating-row"><span><Star size={13} fill="currentColor"/> {product.rating}</span><b>{product.soldCount}+ sold</b></div>
           <div className="product-showcase" data-brand={product.brand.toLowerCase()} data-product={product.slug}><div className="showcase-ring"/><img key={variant.imageUrl} src={variant.imageUrl} alt={`${product.name} in ${variant.color}`}/></div>
-          <div className="finish-area"><span>Available in {product.variants.length} finishes</span><div>{product.variants.map((item) => <button key={item.id} onClick={() => selectVariant(item.id)} className={variantId === item.id ? 'active' : ''} aria-label={item.color}><i style={{ background: item.colorHex }}/></button>)}</div></div>
+          <div className="finish-area"><span>Available in {product.variants.length} finishes</span><div>{product.variants.map((item) => <button key={item.id} onClick={() => selectVariant(item.id)} className={variantId === item.id ? 'active' : ''} aria-label={`Choose ${item.color}`} aria-pressed={variantId === item.id}><i style={{ background: item.colorHex }}/></button>)}</div><strong aria-live="polite">{variant.color}</strong></div>
         </article>
 
         <article className="reference-emi-panel">

@@ -30,6 +30,7 @@ test('returns embedded variants and plans at a unique product URL', async () => 
   assert.equal(response.body.product.variants.length, 3);
   assert.ok(response.body.product.variants.every((variant) => variant.emiPlans.length === 7));
   assert.ok(response.body.product.variants[0].emiPlans.some((plan) => plan.interestRate === 10.5));
+  assert.equal(new Set(response.body.product.variants.map((variant) => variant.imageUrl)).size, 3);
 });
 
 test('persists a valid checkout selection in MongoDB', async () => {
