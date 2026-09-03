@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ArrowRight, Check, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 import EmptyState from '../components/EmptyState';
 import Logo from '../components/Logo';
@@ -7,28 +7,74 @@ import Marketplace from '../components/Marketplace';
 
 const tabs = [['brands', 'Top Brands'], ['nearby', 'Nearby Stores'], ['marketplace', '1Fi Marketplace']];
 
+const slides = [
+  {
+    id: 'no-cost', kind: 'campaign',
+    image: 'https://cdn.1fi.in/banners/shop-page%201536x1024.webp',
+    alt: 'Shop today and pay later using mutual funds with no-cost EMIs'
+  },
+  {
+    id: 'stay-invested', theme: 'blue', eyebrow: 'MF-BACKED SHOPPING',
+    title: 'Upgrade today.', accent: 'Keep compounding.',
+    description: 'Own the tech you want without redeeming your mutual fund investments.',
+    image: 'https://www.apple.com/v/macbook-air/z/images/meta/macbook_air_mx__ez5y0k5yy7au_og.png?202607151829',
+    alt: 'MacBook Air shown fully open'
+  },
+  {
+    id: 'zero-interest', theme: 'violet', eyebrow: 'ZERO-COST FLEXIBILITY',
+    title: 'Zero interest.', accent: 'Full freedom.',
+    description: 'Choose a comfortable 3 to 24-month plan with no credit score required.',
+    image: 'https://www.apple.com/v/ipad-air/ah/images/meta/ipad-air_overview__bc2fd15uec0y_og.png?202607290253',
+    alt: 'iPad Air shown completely from the front and back'
+  },
+  {
+    id: 'portfolio', theme: 'magenta', eyebrow: 'YOUR MONEY KEEPS WORKING',
+    title: 'Your portfolio.', accent: 'Still yours.',
+    description: 'Use eligible investments as backing while your funds stay invested.',
+    image: 'https://www.apple.com/v/airpods-pro/s/images/meta/og__c0ceegchesom_overview.png?202607310238',
+    alt: 'A complete pair of AirPods Pro'
+  },
+  {
+    id: 'more-choice', theme: 'indigo', eyebrow: 'MORE TO LOVE ON 1FI',
+    title: 'Phones to gaming.', accent: 'One smart plan.',
+    description: 'Explore premium devices across ten curated products and flexible tenures.',
+    image: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$',
+    alt: 'A complete PlayStation 5 console and controller'
+  }
+];
+
 export default function ShopPage() {
   const [tab, setTab] = useState('marketplace');
+  const [slide, setSlide] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const timer = window.setInterval(() => setSlide((current) => (current + 1) % slides.length), 5200);
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
+  const moveSlide = (direction) => setSlide((current) => (current + direction + slides.length) % slides.length);
+
   return <div className="app-shell shop-shell">
     <header className="shop-site-header"><Logo/><nav><span>Home</span><b>Shop</b><span>EMI Dues</span><span>Limit</span><span>Profile</span></nav><button>Check eligibility</button></header>
     <main className="shop-main">
-    <header className="shop-hero">
-      <span className="mobile-hero-brand"><Logo compact/></span>
-      <img className="hero-mobile-art" src="https://cdn.1fi.in/banners/shop-page%201536x1024.webp" alt="Shop today, pay later using mutual funds"/>
-      <div className="hero-copy"><span><Sparkles size={15}/> 1Fi Marketplace</span><h1>Shop today.<br/><em>Stay invested.</em></h1><p>Buy premium products on flexible EMIs<br/>backed by your mutual funds.</p><a href="#marketplace">Explore products <ArrowRight size={16}/></a></div>
-      <div className="hero-art" aria-hidden="true">
-        <i className="hero-orbit orbit-one"/><i className="hero-orbit orbit-two"/>
-        <div className="hero-finance-card">
-          <div className="finance-card-top"><span><ShieldCheck size={17}/> Secured by investments</span><Logo compact/></div>
-          <p>Available shopping power</p><strong>₹1,50,000</strong>
-          <div className="finance-progress"><i/></div>
-          <div className="finance-stats"><span><small>Interest</small><b>0%</b></span><span><small>Tenure</small><b>Up to 24 months</b></span></div>
-          <div className="finance-status"><span><TrendingUp size={15}/> Mutual funds stay invested</span><i><Check size={12}/></i></div>
+      <header className="shop-hero carousel-hero" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+        <div className="hero-slides" aria-live="polite">
+          {slides.map((item, index) => <article key={item.id} className={`hero-slide ${item.kind === 'campaign' ? 'campaign-slide' : `designed-slide ${item.theme}`} ${slide === index ? 'active' : ''}`} aria-hidden={slide !== index}>
+            {item.kind === 'campaign' ? <img src={item.image} alt={item.alt}/> : <>
+              <div className="slide-copy"><span><Sparkles size={14}/>{item.eyebrow}</span><h1>{item.title}<br/><em>{item.accent}</em></h1><p>{item.description}</p><a href="#marketplace">Explore marketplace <ArrowRight size={16}/></a></div>
+              <div className="slide-visual"><i/><img src={item.image} alt={item.alt}/><span className="slide-brand"><Logo compact/> <b>1Fi Marketplace</b></span></div>
+            </>}
+          </article>)}
         </div>
-      </div>
-    </header>
-    <div className="shop-content"><div className="tabs" role="tablist" aria-label="Shop sections">{tabs.map(([value,label]) => <button key={value} role="tab" aria-selected={tab === value} className={tab === value ? 'selected' : ''} onClick={() => setTab(value)}>{label}</button>)}</div>
-      <div id="marketplace"/>
-      {tab === 'marketplace' ? <Marketplace/> : <EmptyState type={tab}/>}</div>
-  </main><BottomNav/></div>;
+        <button className="carousel-arrow previous" onClick={() => moveSlide(-1)} aria-label="Previous promotion"><ChevronLeft/></button>
+        <button className="carousel-arrow next" onClick={() => moveSlide(1)} aria-label="Next promotion"><ChevronRight/></button>
+        <div className="carousel-dots" aria-label="Choose promotion">{slides.map((item, index) => <button key={item.id} className={slide === index ? 'active' : ''} onClick={() => setSlide(index)} aria-label={`Show promotion ${index + 1}`} aria-current={slide === index ? 'true' : undefined}/>)}</div>
+      </header>
+      <div className="shop-content"><div className="tabs" role="tablist" aria-label="Shop sections">{tabs.map(([value,label]) => <button key={value} role="tab" aria-selected={tab === value} className={tab === value ? 'selected' : ''} onClick={() => setTab(value)}>{label}</button>)}</div>
+        <div id="marketplace"/>
+        {tab === 'marketplace' ? <Marketplace/> : <EmptyState type={tab}/>}</div>
+    </main><BottomNav/>
+  </div>;
 }

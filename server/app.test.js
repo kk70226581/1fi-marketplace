@@ -5,7 +5,7 @@ import { app } from './app.js';
 
 test('lists seeded products from SQLite', async () => {
   const response = await request(app).get('/api/products').expect(200);
-  assert.equal(response.body.products.length, 3);
+  assert.equal(response.body.products.length, 10);
   assert.ok(response.body.products.every((product) => product.startingEmi > 0));
 });
 
