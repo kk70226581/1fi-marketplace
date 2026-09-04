@@ -4,7 +4,8 @@ A responsive full-stack marketplace for the 1Fi Shop experience. The Shop page c
 
 ## Live application
 
-- Frontend: [1fi-marketplace.vercel.app](https://1fi-marketplace.vercel.app/shop)
+- Frontend: [GitHub Pages deployment](https://kk70226581.github.io/1fi-marketplace/#/shop)
+- Previous Vercel deployment: [1fi-marketplace.vercel.app](https://1fi-marketplace.vercel.app/shop)
 - Backend: [API health endpoint](https://onefi-marketplace-api-kmx6.onrender.com/api/health)
 - Repository: [kk70226581/1fi-marketplace](https://github.com/kk70226581/1fi-marketplace)
 
