@@ -7,7 +7,7 @@ export default function ProductCard({ product }) {
   const saving = product.mrp - product.startingPrice;
   const discount = Math.round((saving / product.mrp) * 100);
 
-  return <Link className="product-card" data-brand={product.brand.toLowerCase()} data-product={product.slug} to={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
+  return <Link className="product-card" data-brand={product.brand.toLowerCase()} data-category={product.category.toLowerCase()} data-product={product.slug} to={`/products/${product.slug}`} aria-label={`View ${product.name}`}>
     <div className="product-image-wrap">
       <img src={product.imageUrl} alt={product.name} loading="lazy" decoding="async"/>
       <span className="product-badge"><BadgeCheck size={12}/>{product.badge}</span>
@@ -18,7 +18,7 @@ export default function ProductCard({ product }) {
       <h3>{product.name}</h3>
       <p className="tagline">{product.tagline}</p>
       <div className="price-row"><strong>{money(product.startingPrice)}</strong><s>{money(product.mrp)}</s><b>Save {discount}%</b></div>
-      <div className="emi-row"><span><small>EMI from</small><strong>{money(product.startingEmi)}<i>/month</i></strong><em>0% interest up to 24 months</em></span><span className="round-arrow">Explore <ArrowRight size={15}/></span></div>
+      <div className="emi-row"><span><small>EMI from</small><strong>{money(product.startingEmi)}<i>/month</i></strong><em>0% interest up to 24 months</em></span><span className="round-arrow">View details <ArrowRight size={15}/></span></div>
     </div>
   </Link>;
 }

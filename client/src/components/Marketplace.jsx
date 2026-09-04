@@ -45,7 +45,7 @@ export default function Marketplace() {
       <div><span><Clock3 size={16}/></span><p><b>Flexible tenures</b><small>Choose 3-60 months</small></p></div>
     </div>
 
-    <div className="catalogue-heading" id="catalogue"><div><h2>{category === 'All' ? 'Explore all products' : `Explore ${category.toLowerCase()}`}</h2><span aria-live="polite">{visibleProducts.length} {visibleProducts.length === 1 ? 'product' : 'products'}</span></div>
+    <div className="catalogue-heading" id="catalogue"><div><div><span className="catalogue-kicker">Shop by category</span><h2>{category === 'All' ? 'Explore all products' : `Explore ${category.toLowerCase()}`}</h2><p>Tap any product to compare finishes, pricing and flexible EMI plans.</p></div><span className="product-count" aria-live="polite">{visibleProducts.length} {visibleProducts.length === 1 ? 'product' : 'products'}</span></div>
       <div className="category-chips" aria-label="Filter products by category">{categories.map((item) => <button key={item} type="button" className={category === item ? 'active' : ''} aria-pressed={category === item} onClick={() => chooseCategory(item)}>{item}</button>)}</div>
     </div>
     {status === 'loading' && <div className="product-grid" aria-label="Loading products">{[1,2,3,4,5,6].map((item) => <div className="product-card skeleton" key={item}/>)}</div>}

@@ -521,3 +521,83 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
   .emi-row { min-height:42px; margin-top:9px; padding-top:8px; }
   .round-arrow { min-width:30px; width:30px; height:30px; padding:0; border-radius:50%; font-size:0; }
 }
+
+/* Final catalogue polish: consistent imagery, clearer hierarchy and stronger navigation. */
+.marketplace-pane { color:#18131f; }
+.tabs button { min-width:0; }
+.marketplace-title h2 { font-weight:700; }
+.search-box { min-height:50px; border-color:#e4ddec; background:#fcfbfd; box-shadow:0 4px 14px rgba(39,20,61,.035); }
+.search-box svg { color:#8a6cac; }
+.market-perks>div { position:relative; overflow:hidden; min-height:72px; border-color:#e9e1f0; background:linear-gradient(135deg,#fbf9fd,#f5f0fa); }
+.market-perks>div:after { content:""; position:absolute; width:70px; height:70px; right:-28px; bottom:-36px; border-radius:50%; background:rgba(113,44,220,.06); }
+.market-perks>div>span { position:relative; z-index:1; color:#712cdc; background:#eee5ff; box-shadow:inset 0 0 0 1px rgba(113,44,220,.06); }
+
+.catalogue-heading>div:first-child { align-items:flex-end; }
+.catalogue-heading>div:first-child>div { min-width:0; }
+.catalogue-kicker { display:block; margin-bottom:7px; color:#712cdc; font-size:9px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+.catalogue-heading h2 { line-height:1.05; }
+.catalogue-heading p { margin:7px 0 0; color:#817986; font-size:11px; line-height:1.45; }
+.catalogue-heading .product-count { flex:none; padding:7px 10px; border:1px solid #e7deed; border-radius:999px; color:#665e6b; background:#faf8fb; font-size:9px; font-weight:700; }
+.category-chips { padding-top:3px; }
+.category-chips button { min-height:40px; border-color:#e5ddea; box-shadow:0 3px 10px rgba(37,18,55,.025); transition:transform .18s ease,border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease; }
+.category-chips button:hover { transform:translateY(-1px); background:#faf7ff; box-shadow:0 6px 14px rgba(55,25,84,.07); }
+.category-chips button.active { background:linear-gradient(120deg,#6822d5,#8739ea); box-shadow:0 7px 17px rgba(113,44,220,.24); }
+
+.product-grid { align-items:stretch; }
+.product-card { display:flex; flex-direction:column; isolation:isolate; border-color:#e7e0eb; border-radius:24px; background:#fff; box-shadow:0 10px 30px rgba(34,18,51,.07); }
+.product-card:focus-visible { outline:3px solid rgba(113,44,220,.3); outline-offset:3px; }
+.product-card:hover { border-color:#cdb8e2; box-shadow:0 20px 44px rgba(34,18,51,.13); }
+.product-image-wrap { height:auto; aspect-ratio:4 / 3; min-height:0; border-bottom-color:#ece7ef; background:radial-gradient(circle at 50% 35%,#fff 0,#f7f4f9 68%,#f0ebf3 100%); }
+.product-image-wrap:before { content:""; position:absolute; inset:12% 18%; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.95),rgba(255,255,255,0) 70%); pointer-events:none; }
+.product-image-wrap:after { inset:auto 21% 9%; height:13px; opacity:.45; filter:blur(12px); }
+.product-card[data-product] .product-image-wrap img { z-index:2; width:auto; height:auto; max-width:84%; max-height:84%; padding:0; object-fit:contain; object-position:center; transform:none; filter:drop-shadow(0 11px 10px rgba(29,17,40,.09)); }
+.product-card[data-category="smartphones"] .product-image-wrap img { max-width:82%; max-height:88%; }
+.product-card[data-category="computers"] .product-image-wrap img,.product-card[data-category="tablets"] .product-image-wrap img { max-width:87%; max-height:76%; }
+.product-card[data-category="audio"] .product-image-wrap img,.product-card[data-category="gaming"] .product-image-wrap img { max-width:80%; max-height:80%; }
+.product-card[data-brand="samsung"] .product-image-wrap { background:radial-gradient(circle at 54% 35%,#262936 0,#0a0c12 58%,#030407 100%); }
+.product-card[data-product]:hover .product-image-wrap img { transform:translateY(-3px) scale(1.018); }
+.product-badge { top:12px; left:12px; padding:6px 9px; border-color:#e3d6f3; background:rgba(255,255,255,.94); font-size:8px; letter-spacing:.02em; backdrop-filter:blur(8px); }
+.product-like { top:11px; right:11px; width:34px; height:34px; color:#706876; transition:color .18s ease,transform .18s ease; }
+.product-card:hover .product-like { color:#7130d7; transform:scale(1.04); }
+.product-card-body { flex:1; display:flex; flex-direction:column; padding:18px 19px 19px; }
+.card-meta { margin-bottom:8px; }
+.product-card h3 { white-space:normal; overflow:visible; text-overflow:clip; line-height:1.13; }
+.product-card .tagline { min-height:31px; margin:7px 0 13px; white-space:normal; overflow:visible; line-height:1.4; }
+.price-row { min-height:28px; }
+.price-row b { font-weight:700; }
+.emi-row { margin-top:auto; padding-top:13px; }
+.emi-row>span:first-child { gap:2px; }
+.emi-row em { line-height:1.3; }
+.round-arrow { min-width:106px; height:36px; justify-content:center; border-radius:11px; background:linear-gradient(120deg,#6721d5,#8739ed); box-shadow:0 8px 16px rgba(105,34,213,.23); }
+
+@media (min-width:900px) {
+  .shop-shell { width:min(1680px,100%); max-width:1680px; }
+  .shop-content { width:min(100%,1580px); margin:-29px auto 0; padding:0 34px 64px; }
+  .marketplace-pane { padding:30px 25px 10px; }
+  .marketplace-toolbar { grid-template-columns:minmax(0,1fr) minmax(330px,430px); }
+  .product-grid { gap:20px; }
+}
+
+@media (min-width:1280px) {
+  .product-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
+
+@media (max-width:899px) {
+  .carousel-arrow { display:none; }
+  .catalogue-heading>div:first-child { align-items:flex-start; }
+  .catalogue-heading p { max-width:300px; font-size:9px; }
+  .catalogue-heading .product-count { margin-top:15px; }
+  .product-card { display:grid; grid-template-columns:140px minmax(0,1fr); min-height:184px; border-radius:19px; }
+  .product-image-wrap { height:100%; min-height:184px; aspect-ratio:auto; }
+  .product-card[data-product] .product-image-wrap img { max-width:84%; max-height:82%; }
+  .product-card[data-category="smartphones"] .product-image-wrap img { max-width:82%; max-height:88%; }
+  .product-card-body { padding:14px; }
+  .product-card .tagline { min-height:0; }
+  .round-arrow { min-width:32px; width:32px; height:32px; padding:0; border-radius:50%; font-size:0; }
+}
+
+@media (max-width:390px) {
+  .catalogue-heading p { display:none; }
+  .product-card { grid-template-columns:122px minmax(0,1fr); }
+  .price-row { gap:5px; }
+}
