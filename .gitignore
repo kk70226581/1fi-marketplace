@@ -6,3 +6,6 @@ server/data/*.db-*
 .env
 .DS_Store
 *.log
+source.zip
+source-extract/
+live-marketplace*.png

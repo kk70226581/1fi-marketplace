@@ -55,7 +55,11 @@ export const CheckoutIntent = mongoose.models.CheckoutIntent || mongoose.model('
 export async function connectDatabase() {
   if (mongoose.connection.readyState === 1) return mongoose.connection;
   mongoose.set('strictQuery', true);
-  await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+  try {
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2000 });
+  } catch (err) {
+    console.warn(`MongoDB not accessible at ${mongoUri}. Operating with in-memory catalog.`);
+  }
   return mongoose.connection;
 }
 
@@ -121,22 +125,55 @@ function mapProduct(product, includeDetails = false) {
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+async function getMemoryProducts() {
+  const { products, toMongoProduct } = await import('./seed.js');
+  return products.map((product, index) => {
+    const item = toMongoProduct(product);
+    return {
+      ...item,
+      _id: `mem-${index + 1}`,
+      variants: item.variants.map((v, vi) => ({
+        ...v,
+        _id: `mem-v-${index + 1}-${vi + 1}`,
+        emiPlans: v.emiPlans.map((p, pi) => ({
+          ...p,
+          _id: `mem-p-${index + 1}-${vi + 1}-${pi + 1}`
+        }))
+      }))
+    };
+  });
+}
+
 export async function listProducts(search = '') {
-  const term = search.trim();
-  const filter = term ? {
-    $or: ['name', 'brand', 'category'].map((field) => ({ [field]: { $regex: escapeRegex(term), $options: 'i' } }))
-  } : {};
-  const products = await Product.find(filter).sort({ featured: -1, createdAt: 1 }).lean();
-  return products.map((product) => mapProduct(product));
+  const term = search.trim().toLowerCase();
+  if (mongoose.connection.readyState === 1) {
+    const filter = term ? {
+      $or: ['name', 'brand', 'category'].map((field) => ({ [field]: { $regex: escapeRegex(term), $options: 'i' } }))
+    } : {};
+    const products = await Product.find(filter).sort({ featured: -1, createdAt: 1 }).lean();
+    return products.map((product) => mapProduct(product));
+  }
+  const items = await getMemoryProducts();
+  const filtered = term
+    ? items.filter((p) => p.name.toLowerCase().includes(term) || p.brand.toLowerCase().includes(term) || p.category.toLowerCase().includes(term))
+    : items;
+  return filtered.sort((a, b) => Number(b.featured) - Number(a.featured)).map((product) => mapProduct(product));
 }
 
 export async function getProduct(slug) {
-  const product = await Product.findOne({ slug }).lean();
+  if (mongoose.connection.readyState === 1) {
+    const product = await Product.findOne({ slug }).lean();
+    return product ? mapProduct(product, true) : null;
+  }
+  const items = await getMemoryProducts();
+  const product = items.find((p) => p.slug === slug);
   return product ? mapProduct(product, true) : null;
 }
 
 export async function createCheckout(productId, variantId, planId) {
   const reference = `1FI-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}`;
-  await CheckoutIntent.create({ reference, productId, variantId, planId });
+  if (mongoose.connection.readyState === 1) {
+    await CheckoutIntent.create({ reference, productId, variantId, planId });
+  }
   return reference;
 }

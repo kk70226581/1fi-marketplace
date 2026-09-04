@@ -1,13 +1,13 @@
 import { CheckoutIntent, Product, connectDatabase, disconnectDatabase } from './database.js';
 
 const media = {
-  iphoneCard: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-17-pro-finish-select-cosmicorange-202509?wid=940&hei=1112&fmt=png-alpha',
-  iphoneOrange: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-17-pro-finish-select-cosmicorange-202509?wid=940&hei=1112&fmt=png-alpha',
+  iphoneCard: '/products/iphone-17-pro-orange.jpg',
+  iphoneOrange: '/products/iphone-17-pro-orange.jpg',
   iphoneSilver: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-17-pro-finish-select-silver-202509?wid=940&hei=1112&fmt=png-alpha',
   iphoneBlue: 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/iphone-17-pro-finish-select-deepblue-202509?wid=940&hei=1112&fmt=png-alpha',
-  galaxyGray: 'https://images.samsung.com/in/smartphones/galaxy-s25-ultra/images/galaxy-s25-ultra-features-colors-titanium-gray.jpg',
-  galaxyBlack: 'https://images.samsung.com/in/smartphones/galaxy-s25-ultra/images/galaxy-s25-ultra-features-colors-titanium-black.jpg',
-  pixel: 'https://lh3.googleusercontent.com/cUnl8qDLSpzTlH9_9fIEpNHq8EiVH-JwF-r0FPGha83zS26d0FO4LYUxYDU-k3CO6VDt9pyMOHWXiSvvFcenGccNM5B1L8TVO-2OtA=w1000-rj-sc0xffffffff',
+  galaxyGray: '/products/galaxy-s25-ultra-gray.jpg',
+  galaxyBlack: '/products/galaxy-s25-ultra-black.jpg',
+  pixel: '/products/pixel-10-pro.jpg',
   macbook: 'https://www.apple.com/v/macbook-air/z/images/meta/macbook_air_mx__ez5y0k5yy7au_og.png?202607151829',
   ipad: 'https://www.apple.com/v/ipad-air/ah/images/meta/ipad-air_overview__bc2fd15uec0y_og.png?202607290253',
   airpods: 'https://www.apple.com/v/airpods-pro/s/images/meta/og__c0ceegchesom_overview.png?202607310238',
@@ -164,7 +164,7 @@ function makePlans(productSlug, mrp, price) {
   });
 }
 
-function toMongoProduct(product) {
+export function toMongoProduct(product) {
   const { variants, images, specs, ...data } = product;
   return {
     ...data,

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "setup": "npm --prefix server ci && npm --prefix client ci",
+    "setup": "npm ci && npm --prefix server ci && npm --prefix client ci",
     "dev": "concurrently -n API,WEB -c magenta,cyan \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
     "build": "npm --prefix client run build",
     "start": "npm --prefix server run start",
