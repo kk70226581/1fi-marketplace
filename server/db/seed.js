@@ -87,7 +87,8 @@ export const products = [
     images: [media.airpods],
     specs: [['Audio', 'Adaptive Audio'], ['Noise control', 'Active Noise Cancellation'], ['Fit', 'Four ear tip sizes'], ['Charging', 'USB-C and wireless'], ['Protection', 'Dust, sweat and water resistant'], ['In the box', 'AirPods Pro, MagSafe case, ear tips, cable']],
     variants: [
-      ['USB-C · White', 'USB-C', 'White', '#f2f2f2', media.airpods, 25900, 23900]
+      ['USB-C · White', 'USB-C', 'White', '#f2f2f2', media.airpods, 25900, 23900],
+      ['MagSafe case · White', 'MagSafe case', 'White', '#f2f2f2', media.airpods, 27900, 25900]
     ]
   },
   {
@@ -98,7 +99,8 @@ export const products = [
     images: [media.playstation],
     specs: [['Edition', 'Disc console'], ['Resolution', 'Up to 4K'], ['Storage', 'Ultra-high-speed SSD'], ['Controller', 'DualSense wireless'], ['Audio', 'Tempest 3D AudioTech'], ['In the box', 'Console, controller, cables, stand']],
     variants: [
-      ['Disc Edition · White', '1 TB', 'White', '#eceff3', media.playstation, 54990, 49990]
+      ['Disc Edition · White', '1 TB Disc', 'White', '#eceff3', media.playstation, 54990, 49990],
+      ['Digital Edition · White', '1 TB Digital', 'White', '#eceff3', media.playstation, 49990, 45990]
     ]
   },
   {
@@ -121,7 +123,8 @@ export const products = [
     images: [media.watch],
     specs: [['Case', '49 mm titanium'], ['Display', 'Always-On Retina'], ['Connectivity', 'GPS + Cellular'], ['Water resistance', '100 metres'], ['Battery', 'Multi-day battery life'], ['In the box', 'Watch, band, charging cable']],
     variants: [
-      ['49 mm · Titanium', '49 mm', 'Natural Titanium', '#b8b0a1', media.watch, 89900, 84900]
+      ['Ocean Band · Titanium', '49 mm · Ocean Band', 'Natural Titanium', '#b8b0a1', media.watch, 89900, 84900],
+      ['Trail Loop · Titanium', '49 mm · Trail Loop', 'Natural Titanium', '#b8b0a1', media.watch, 92900, 87900]
     ]
   },
   {
@@ -132,7 +135,8 @@ export const products = [
     images: [media.homepod],
     specs: [['Audio', '360-degree computational audio'], ['Assistant', 'Siri'], ['Connectivity', 'Wi-Fi and Bluetooth'], ['Home control', 'Matter and HomeKit'], ['Size', 'Compact 3.3-inch design'], ['In the box', 'HomePod mini, power adapter']],
     variants: [
-      ['HomePod mini · Orange', 'Standard', 'Orange', '#e86f45', media.homepod, 10900, 9900]
+      ['HomePod mini · Orange', 'Standard', 'Orange', '#e86f45', media.homepod, 10900, 9900],
+      ['HomePod mini · Blue', 'Standard', 'Blue', '#527ea0', media.homepod, 10900, 9900]
     ]
   }
 ];

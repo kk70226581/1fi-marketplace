@@ -1,109 +1,161 @@
-# 1Fi Marketplace
+# 1Fi Marketplace - SDE1 Assignment
 
-A mobile-first marketplace concept for the 1Fi Shop experience. It adds a third **1Fi Marketplace** entry alongside **Top Brands** and **Nearby Stores**, then lets customers browse products, select a variant, compare mutual-fund-backed EMI plans, and proceed with a selected plan.
+A responsive full-stack marketplace for the 1Fi Shop experience. The Shop page contains the three requested options: **Top Brands**, **Nearby Stores**, and **1Fi Marketplace**. The marketplace is database-driven and lets a customer browse products, choose a variant, compare mutual-fund-backed EMI plans, and create a demo checkout intent.
 
-The marketplace includes a five-slide campaign carousel, ten catalogue products, category and search controls, full product pages, and responsive layouts for mobile and desktop.
+## Live application
 
-## Tech stack
+- Frontend: [1fi-marketplace.vercel.app](https://1fi-marketplace.vercel.app/shop)
+- Backend: [API health endpoint](https://onefi-marketplace-api-kmx6.onrender.com/api/health)
+- Repository: [kk70226581/1fi-marketplace](https://github.com/kk70226581/1fi-marketplace)
+
+## Assignment requirements covered
+
+- Product information, pricing, images, variants, and EMI plans are stored in MongoDB and returned through Express APIs. The React UI fetches this data; product data is not hard-coded in the interface.
+- Ten seed products are available. Every product has a unique `/products/:slug` URL, and more than three products provide two or more purchasable variants.
+- Every variant has seven selectable EMI plans showing monthly payment, tenure, interest rate, cashback, and a recommended plan.
+- The **Proceed** action validates the selected product, variant, and plan, then stores a demo checkout intent in MongoDB.
+- **Top Brands** and **Nearby Stores** are separate Shop options with intentionally blank placeholder states, as requested. **1Fi Marketplace** contains the complete implementation.
+- The responsive layout supports mobile and desktop, including the campaign carousel, product catalogue, filters, search, product gallery, variants, and EMI selector.
+
+## Stack
 
 - Frontend: React 19, React Router, Vite, CSS
 - Backend: Node.js, Express 5
-- Database: MongoDB with Mongoose
-- Tests: Node test runner and Supertest
+- Database: MongoDB and Mongoose
+- Testing: Node test runner and Supertest
+- Hosting: Vercel (frontend) and Render (API)
 
-## Setup and run
+## Run locally
 
-Requirements: Node.js 20+, npm, and a running MongoDB server.
+Prerequisites: Node.js 20+, npm, and either local MongoDB or a MongoDB Atlas connection string.
 
-1. Install dependencies:
+```bash
+git clone https://github.com/kk70226581/1fi-marketplace.git
+cd 1fi-marketplace
+npm run setup
+```
 
-   ```bash
-   npm run setup
-   ```
+Create `server/.env` from [`server/.env.example`](server/.env.example). For local MongoDB, use:
 
-2. Copy `server/.env.example` to `server/.env` if a different MongoDB connection string or port is required. By default, the app uses:
+```text
+MONGODB_URI=mongodb://127.0.0.1:27017/onefi_marketplace
+PORT=4000
+```
 
-   ```text
-   mongodb://127.0.0.1:27017/onefi_marketplace
-   ```
+Seed and run the application:
 
-3. Seed the catalogue and start the app:
+```bash
+npm run seed
+npm run dev
+```
 
-   ```bash
-   npm run seed
-   npm run dev
-   ```
+Open `http://localhost:5173/shop`. Vite proxies `/api` requests to the API at `http://localhost:4000`.
 
-Open `http://localhost:5173`. The frontend development server proxies `/api` requests to the API at `http://localhost:4000`.
-
-For a production-style run:
+For a production-style local run:
 
 ```bash
 npm run build
 npm start
 ```
 
-Then open `http://localhost:4000`.
-
-Run verification with:
+Run the automated checks with:
 
 ```bash
 npm test
 ```
 
-## Main routes
-
-- `/shop` — Shop page with Top Brands, Nearby Stores, and 1Fi Marketplace
-- `/products/iphone-17-pro`
-- `/products/samsung-galaxy-s25-ultra`
-- `/products/google-pixel-10-pro`
-
-## API endpoints
+## API endpoints and example responses
 
 ### `GET /api/health`
 
 ```json
-{ "status": "ok", "database": "mongodb" }
+{
+  "status": "ok",
+  "database": "mongodb"
+}
 ```
 
 ### `GET /api/products`
 
-Returns ten marketplace cards with each product's starting price and EMI. Optional search: `/api/products?search=apple`.
+Returns all product cards. It supports an optional search, for example `/api/products?search=apple`.
+
+```json
+{
+  "products": [
+    {
+      "id": "...",
+      "slug": "iphone-17-pro",
+      "brand": "Apple",
+      "name": "iPhone 17 Pro",
+      "startingPrice": 127400,
+      "mrp": 134900,
+      "startingEmi": 2842,
+      "variantCount": 3
+    }
+  ]
+}
+```
 
 ### `GET /api/products/:slug`
 
-Returns one product with its image gallery, specifications, variants, and embedded EMI plans. Each plan includes tenure, monthly payment, interest rate, cashback, and recommendation status.
+Returns a product, gallery, specifications, variants, and their embedded EMI plans. Example: `/api/products/iphone-17-pro`.
+
+```json
+{
+  "product": {
+    "slug": "iphone-17-pro",
+    "name": "iPhone 17 Pro",
+    "variants": [
+      {
+        "id": "...",
+        "label": "Cosmic Orange - 256 GB",
+        "price": 127400,
+        "emiPlans": [
+          {
+            "id": "...",
+            "tenureMonths": 12,
+            "monthlyPayment": 11242,
+            "interestRate": 0,
+            "cashback": 7500,
+            "recommended": true
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
 ### `POST /api/checkout`
 
-Validates that the selected product, variant, and plan belong together, then persists a demo checkout intent in MongoDB.
+Validates the selected product, variant, and plan before storing a demo checkout intent.
 
 ```json
 {
   "productSlug": "iphone-17-pro",
-  "variantId": "<MongoDB ObjectId>",
-  "planId": "<MongoDB ObjectId>"
+  "variantId": "<variant ObjectId>",
+  "planId": "<plan ObjectId>"
 }
 ```
 
-## MongoDB data model
-
-```text
-products
-  ├── images[]
-  ├── specifications[]
-  └── variants[]
-       └── plans[]
-
-checkout_intents → selected product, variant, and plan ObjectIds
+```json
+{
+  "checkout": {
+    "id": "1FI-...",
+    "status": "ready"
+  }
+}
 ```
 
-`products` contains product copy, category, media, availability, specifications, and nested variant/EMI-plan data. `checkout_intents` stores validated selections and a unique demo reference. The repeatable catalogue seed is in `server/db/seed.js`.
+## Database
 
-## Demo checklist
+The Mongoose models are implemented in [`server/db/database.js`](server/db/database.js). Repeatable MongoDB seed data lives in [`server/db/seed.js`](server/db/seed.js), and the submission-ready schema reference is in [`docs/database-schema.md`](docs/database-schema.md).
 
-1. Show the three Shop options and the blank Top Brands/Nearby Stores states.
-2. Open **1Fi Marketplace**, browse the campaign carousel, filter categories, and search products.
-3. Open a product, switch its variant, and choose an EMI plan.
-4. Complete the demo Proceed flow.
-5. Show the MongoDB `onefi_marketplace` database and API responses.
+```text
+products -> variants[] -> emiPlans[]
+checkout_intents -> selected product, variant, and plan ObjectIds
+```
+
+## Required demo video
+
+The assignment requires a public 2-5 minute demonstration video. A timed recording script is available at [`docs/demo-video-script.md`](docs/demo-video-script.md). Record it, upload it to Google Drive or YouTube with public link access, and submit that URL together with the GitHub repository and deployed frontend link.

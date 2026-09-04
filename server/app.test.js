@@ -25,6 +25,15 @@ test('lists ten seeded products from MongoDB', async () => {
   assert.ok(response.body.products.every((product) => typeof product.id === 'string'));
 });
 
+test('provides at least three products with two or more purchasable variants', async () => {
+  const productSlugs = ['iphone-17-pro', 'samsung-galaxy-s25-ultra', 'google-pixel-10-pro'];
+  const products = await Promise.all(productSlugs.map(async (slug) => (
+    (await request(app).get(`/api/products/${slug}`).expect(200)).body.product
+  )));
+  assert.ok(products.every((product) => product.variants.length >= 2));
+  assert.ok(products.every((product) => product.variants.every((variant) => variant.emiPlans.length >= 2)));
+});
+
 test('returns embedded variants and plans at a unique product URL', async () => {
   const response = await request(app).get('/api/products/iphone-17-pro').expect(200);
   assert.equal(response.body.product.variants.length, 3);
