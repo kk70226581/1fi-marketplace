@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import BottomNav from '../components/BottomNav';
 import EmptyState from '../components/EmptyState';
 import Logo from '../components/Logo';
@@ -44,6 +45,7 @@ const slides = [
 ];
 
 export default function ShopPage() {
+  const location = useLocation();
   const [tab, setTab] = useState('marketplace');
   const [slide, setSlide] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -54,10 +56,31 @@ export default function ShopPage() {
     return () => window.clearInterval(timer);
   }, [paused]);
 
+  useEffect(() => {
+    if (location.search || ['#marketplace', '#catalogue', '#benefits', '#product-search'].includes(location.hash)) {
+      setTab('marketplace');
+    }
+
+    if (!location.hash) return undefined;
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: 'start' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [location.hash, location.search]);
+
   const moveSlide = (direction) => setSlide((current) => (current + direction + slides.length) % slides.length);
 
   return <div className="app-shell shop-shell">
-    <header className="shop-site-header"><Logo/><nav><span>Home</span><b>Shop</b><span>EMI Dues</span><span>Limit</span><span>Profile</span></nav><button>Check eligibility</button></header>
+    <header className="shop-site-header">
+      <Link className="shop-brand-link" to="/shop" aria-label="1Fi Marketplace home"><Logo/></Link>
+      <nav aria-label="Marketplace navigation">
+        <Link to="/shop">Home</Link>
+        <a className="active" href="#marketplace" aria-current="page">Shop</a>
+        <Link to="/shop?category=Smartphones#catalogue">Smartphones</Link>
+        <a href="#benefits">EMI benefits</a>
+      </nav>
+      <a className="eligibility-link" href="#catalogue">Explore products <ArrowRight size={14}/></a>
+    </header>
     <main className="shop-main">
       <header className="shop-hero carousel-hero" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
         <div className="hero-slides" aria-live="polite">

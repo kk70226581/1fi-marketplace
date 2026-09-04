@@ -59,12 +59,12 @@ export default function ProductPage() {
     <header className="site-header"><div className="site-header-inner">
       <Link className="mobile-detail-back" to="/shop" aria-label="Back to Shop"><ArrowLeft size={19}/></Link>
       <Link className="brand-link" to="/shop"><Logo/></Link>
-      <nav><Link to="/shop">Marketplace</Link><a href="#how-it-works">How it works</a><a href="#details">Product details</a></nav>
+      <nav aria-label="Product navigation"><Link to="/shop">Marketplace</Link><Link to={`/shop?category=${encodeURIComponent(product.category)}#catalogue`}>{product.category}</Link><a href="#how-it-works">How it works</a><a href="#details">Product details</a></nav>
       <span className="secure-pill"><LockKeyhole size={14}/> Secure checkout</span>
     </div></header>
 
     <main className="detail-page">
-      <div className="breadcrumbs"><Link to="/shop">Shop</Link><ChevronRight size={13}/><span>{product.category}</span><ChevronRight size={13}/><b>{product.name}</b></div>
+      <div className="breadcrumbs"><Link to="/shop">Shop</Link><ChevronRight size={13}/><Link to={`/shop?category=${encodeURIComponent(product.category)}#catalogue`}>{product.category}</Link><ChevronRight size={13}/><b>{product.name}</b></div>
 
       <section className="product-layout">
         <article className="reference-product-panel">

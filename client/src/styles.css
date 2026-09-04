@@ -42,6 +42,8 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 .search-box:focus-within { border-color:#9b6be5; box-shadow:0 0 0 3px #f0e9fb; }
 .search-box input { min-width:0; flex:1; border:0; outline:0; font-size:13px; color:#17131f; }
 .market-perks { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }.market-perks>div { min-width:0; display:flex; align-items:center; gap:8px; padding:10px; background:#f8f5fb; border:1px solid #eee8f2; border-radius:13px; }.market-perks>div>span { width:31px; height:31px; display:grid; place-items:center; flex:none; color:var(--purple); background:#eee5fb; border-radius:10px; }.market-perks p { min-width:0; margin:0; display:flex; flex-direction:column; gap:2px; }.market-perks b { font-size:9px; white-space:nowrap; }.market-perks small { color:#89828d; font-size:7px; white-space:nowrap; }
+.market-perks,.marketplace-toolbar { scroll-margin-top:92px; }
+#marketplace,#product-search { scroll-margin-top:92px; }
 .market-heading { display:flex; justify-content:space-between; align-items:flex-end; padding:22px 4px 16px; }
 .mini-label { display:inline-flex; align-items:center; gap:5px; color:var(--purple); font-size:10px; text-transform:uppercase; letter-spacing:.09em; font-weight:700; }
 .market-heading h2 { margin:7px 0 0; font-size:28px; line-height:1.04; letter-spacing:-.04em; }
@@ -131,7 +133,10 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 .site-header-inner { width:min(1180px,calc(100% - 40px)); height:100%; margin:auto; display:flex; align-items:center; justify-content:space-between; }
 .brand-link .logo { font-size:28px; }
 .site-header nav { display:flex; align-items:center; gap:30px; color:#6d6672; font-size:13px; font-weight:600; }
+.site-header nav a { position:relative; padding:9px 0; }
 .site-header nav a:hover { color:var(--purple); }
+.site-header nav a:after { content:""; position:absolute; left:0; right:100%; bottom:2px; height:2px; border-radius:2px; background:var(--purple); transition:right .2s ease; }
+.site-header nav a:hover:after,.site-header nav a:focus-visible:after { right:0; }
 .secure-pill { display:flex; align-items:center; gap:6px; padding:8px 12px; background:#f1eafb; color:#60309b; border-radius:999px; font-size:11px; font-weight:700; }
 .detail-page { width:min(1180px,calc(100% - 40px)); margin:0 auto; }
 .breadcrumbs { height:54px; display:flex; align-items:center; gap:6px; color:#8d8791; font-size:11px; }
@@ -174,7 +179,16 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 @media (min-width:900px) {
   body { padding:0; }.shop-shell { width:min(1400px,100%); max-width:1400px; min-height:100vh; border-radius:0; box-shadow:0 0 55px rgba(38,22,63,.06); }
   .shop-site-header { height:72px; padding:0 42px; display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,.96); border-bottom:1px solid #eee9f1; position:relative; z-index:5; }
-  .shop-site-header .logo { width:40px; height:40px; }.shop-site-header nav { display:flex; align-items:center; gap:30px; font-size:12px; color:#817a86; }.shop-site-header nav b { color:var(--purple); position:relative; }.shop-site-header nav b:after { content:""; position:absolute; left:50%; bottom:-25px; transform:translateX(-50%); width:24px; height:3px; border-radius:3px; background:var(--purple); }.shop-site-header>button { border:0; border-radius:11px; padding:11px 16px; color:#fff; background:var(--purple); font-size:11px; font-weight:700; }
+  .shop-site-header { position:sticky; top:0; }
+  .shop-site-header .logo { width:40px; height:40px; }
+  .shop-brand-link { display:grid; place-items:center; border-radius:11px; }
+  .shop-site-header nav { display:flex; align-items:center; gap:30px; font-size:12px; color:#817a86; }
+  .shop-site-header nav a { position:relative; padding:26px 0; transition:color .18s ease; }
+  .shop-site-header nav a:hover { color:var(--purple); }
+  .shop-site-header nav a.active { color:var(--purple); font-weight:700; }
+  .shop-site-header nav a.active:after { content:""; position:absolute; left:50%; bottom:0; transform:translateX(-50%); width:28px; height:3px; border-radius:3px; background:var(--purple); }
+  .eligibility-link { display:flex; align-items:center; gap:6px; border-radius:11px; padding:11px 16px; color:#fff; background:var(--purple); font-size:11px; font-weight:700; box-shadow:0 6px 14px rgba(113,44,220,.2); transition:transform .18s ease,box-shadow .18s ease; }
+  .eligibility-link:hover { transform:translateY(-1px); box-shadow:0 9px 18px rgba(113,44,220,.26); }
   .shop-hero { height:355px; isolation:isolate; background:radial-gradient(circle at 80% 30%,#8145f3 0%,#4f22d0 30%,#2e14b2 70%); }.shop-hero:after { content:""; position:absolute; z-index:1; inset:0; background:linear-gradient(90deg,#2e14b2 0%,#2e14b2 38%,rgba(46,20,178,.82) 48%,rgba(46,20,178,.28) 58%,transparent 68%); pointer-events:none; }.hero-mobile-art { display:none; }.mobile-hero-brand { display:none; }.hero-copy { display:block; position:relative; z-index:2; padding:38px 0 0 58px; color:#fff; }.hero-copy>span { display:inline-flex; align-items:center; gap:7px; border:1px solid rgba(255,255,255,.55); border-radius:999px; padding:7px 12px; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }.hero-copy h1 { margin:17px 0 0; font-size:45px; line-height:.96; letter-spacing:-.045em; }.hero-copy h1 em { font-weight:400; }.hero-copy p { margin:15px 0 0; color:rgba(255,255,255,.88); font-size:14px; line-height:1.45; }.hero-art { display:block; position:absolute; z-index:0; inset:0 0 0 43%; overflow:hidden; }.hero-art>i { position:absolute; width:330px; height:330px; right:145px; top:12px; border-radius:50%; border:1px solid rgba(255,255,255,.2); box-shadow:0 0 0 34px rgba(255,255,255,.055),0 0 0 72px rgba(255,255,255,.035); }.hero-art img { position:absolute; height:auto; filter:drop-shadow(0 24px 22px rgba(17,5,59,.3)); }.hero-art .hero-phone-main { width:325px; right:188px; top:13px; transform:rotate(-5deg); }.hero-art .hero-phone-secondary { width:275px; right:35px; top:35px; transform:rotate(7deg); }.shop-content { margin-top:-30px; padding:0 50px 50px; }.shop-content>.tabs { width:640px; margin:0 auto; }.tabs button { font-size:12px; }
   .marketplace-pane { padding:30px 1px 0; }.marketplace-toolbar { display:grid; grid-template-columns:1fr 390px; gap:35px; align-items:end; }.marketplace-title h2 { font-size:31px; }.marketplace-title p { font-size:12px; }.marketplace-toolbar .search-box { margin-bottom:1px; }.market-perks { margin-top:18px; gap:12px; }.market-perks>div { padding:12px 14px; border-radius:15px; }.market-perks>div>span { width:36px; height:36px; }.market-perks b { font-size:10px; }.market-perks small { font-size:8px; }
   .section-title { margin-top:26px; }.section-title h2 { font-size:21px; }.product-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }.product-image-wrap { height:218px; }.product-card-body { padding:16px; }.product-card h3 { font-size:18px; }.tagline { font-size:11px; }.price-row strong { font-size:17px; }.emi-row { font-size:10px; }.emi-row strong { font-size:11px; }
@@ -443,7 +457,7 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 }
 
 /* Product gallery: deliberately spacious so catalogue cards read like retail, not a dashboard. */
-.catalogue-heading { margin-top:34px; }
+.catalogue-heading { margin-top:34px; scroll-margin-top:92px; }
 .catalogue-heading h2 { font-size:24px; letter-spacing:-.04em; }
 .catalogue-heading>div:first-child>span { color:#77707c; font-size:11px; }
 .category-chips { gap:9px; margin-top:15px; padding-bottom:8px; }
@@ -457,8 +471,8 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:3px solid rgb
 .product-card[data-brand="samsung"] .product-image-wrap { background:linear-gradient(145deg,#13151d,#030407); }
 .product-card[data-brand="apple"] .product-image-wrap { background:linear-gradient(145deg,#fff 0%,#f2f0f3 100%); }
 .product-card[data-product="iphone-17-pro"] .product-image-wrap { background:radial-gradient(circle at 50% 28%,#fff 0%,#f4f1f6 62%,#ebe6ef 100%); }
-.product-card[data-product="iphone-17-pro"] .product-image-wrap img { padding:10px 22px; transform:scale(1.32); }
-.product-card[data-product="iphone-17-pro"]:hover .product-image-wrap img { transform:scale(1.36); }
+.product-card[data-product="iphone-17-pro"] .product-image-wrap img { padding:18px 26px; transform:none; }
+.product-card[data-product="iphone-17-pro"]:hover .product-image-wrap img { transform:scale(1.025); }
 .product-card-body { padding:17px 18px 18px; }
 .card-meta { margin-bottom:7px; }
 .eyebrow { font-size:9px; letter-spacing:.14em; }
